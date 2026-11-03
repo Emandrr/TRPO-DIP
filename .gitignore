@@ -1,0 +1,57 @@
+# Build
+bin/
+obj/
+out/
+dist/
+*.user.user
+*.suo
+*.user
+*.rsuser
+.vs/
+.idea/
+*.swp
+*~
+
+# Node / Angular
+node_modules/
+.angular/
+coverage/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+**/secrets/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Test / tooling
+TestResults/
+*.trx
+*.coverage
+*.lcov
+playwright-report/
+test-results/
+
+# Data & backups (local)
+**/data/
+**/duckdb/
+**/backups/
+*.duckdb
+*.duckdb.wal
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example

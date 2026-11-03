@@ -1,0 +1,19 @@
+.grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.grid div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.grid span {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+}
+
+.hint {
+  margin-top: 1rem;
+  color: rgba(0, 0, 0, 0.55);
+}

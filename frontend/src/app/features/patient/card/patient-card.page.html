@@ -1,0 +1,17 @@
+<h1>{{ t.medicalCardTitle }}</h1>
+
+@if (loading()) {
+  <p>…</p>
+} @else if (missing() || !card()) {
+  <mat-card><mat-card-content>{{ t.noMedicalCard }}</mat-card-content></mat-card>
+} @else {
+  <mat-card>
+    <mat-card-content class="grid">
+      <div><span>{{ t.lastName }}</span><strong>{{ card()!.lastName }}</strong></div>
+      <div><span>{{ t.firstName }}</span><strong>{{ card()!.firstName }}</strong></div>
+      <div><span>{{ t.middleName }}</span><strong>{{ card()!.middleName || '—' }}</strong></div>
+      <div><span>{{ t.birthDate }}</span><strong>{{ card()!.birthDate }}</strong></div>
+      <div><span>{{ t.sex }}</span><strong>{{ card()!.sex }}</strong></div>
+    </mat-card-content>
+  </mat-card>
+}

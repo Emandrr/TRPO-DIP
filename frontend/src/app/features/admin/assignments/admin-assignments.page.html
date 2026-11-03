@@ -1,0 +1,41 @@
+<h1>{{ t.assignPatientsTitle }}</h1>
+
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="assign()" class="form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.doctor }}</mat-label>
+        <mat-select formControlName="doctorId">
+          @for (d of doctors(); track d.id) {
+            <mat-option [value]="d.id">{{ d.email }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.patient }}</mat-label>
+        <mat-select formControlName="patientId">
+          @for (p of patients(); track p.id) {
+            <mat-option [value]="p.id">{{ p.email }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">{{ t.assign }}</button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+@if (form.controls.doctorId.value) {
+  <h2>{{ t.doctorPatients }}</h2>
+  @if (linked().length === 0) {
+    <p>{{ t.noPatients }}</p>
+  } @else {
+    <ul>
+      @for (p of linked(); track p.patientId) {
+        <li>
+          {{ p.lastName || '' }} {{ p.firstName || '' }} · {{ p.email }}
+          <button mat-button color="warn" type="button" (click)="unassign(p.patientId)">{{ t.delete }}</button>
+        </li>
+      }
+    </ul>
+  }
+}

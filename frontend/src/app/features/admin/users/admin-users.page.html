@@ -1,0 +1,60 @@
+<h1>{{ t.usersTitle }}</h1>
+
+<mat-card class="create">
+  <mat-card-content>
+    <form [formGroup]="createForm" (ngSubmit)="create()" class="form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.email }}</mat-label>
+        <input matInput formControlName="email" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.role }}</mat-label>
+        <mat-select formControlName="role">
+          <mat-option value="Doctor">Doctor</mat-option>
+          <mat-option value="Admin">Admin</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">{{ t.create }}</button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+@if (lastTemp(); as temp) {
+  <mat-card class="temp">
+    <mat-card-content>
+      <p>{{ t.temporaryPasswordLabel }}: <strong>{{ temp.password }}</strong></p>
+      <button mat-stroked-button type="button" (click)="downloadPdf(temp.userId)">{{ t.downloadPdf }}</button>
+    </mat-card-content>
+  </mat-card>
+}
+
+<table mat-table [dataSource]="users()" class="table">
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef>{{ t.email }}</th>
+    <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+  </ng-container>
+  <ng-container matColumnDef="role">
+    <th mat-header-cell *matHeaderCellDef>{{ t.role }}</th>
+    <td mat-cell *matCellDef="let row">{{ row.role }}</td>
+  </ng-container>
+  <ng-container matColumnDef="blocked">
+    <th mat-header-cell *matHeaderCellDef>{{ t.blocked }}</th>
+    <td mat-cell *matCellDef="let row">{{ row.isBlocked ? t.yes : t.no }}</td>
+  </ng-container>
+  <ng-container matColumnDef="createdAt">
+    <th mat-header-cell *matHeaderCellDef>{{ t.createdAt }}</th>
+    <td mat-cell *matCellDef="let row">{{ row.createdAt | date: 'dd.MM.yyyy' }}</td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let row" class="actions">
+      <button mat-button type="button" (click)="toggleBlock(row)">{{ row.isBlocked ? t.unblock : t.block }}</button>
+      <button mat-button type="button" (click)="resetPassword(row)">{{ t.tempPassword }}</button>
+      @if (row.role === 'Patient') {
+        <button mat-button type="button" (click)="setConsent(row)">{{ t.consent }}</button>
+      }
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns"></tr>
+</table>

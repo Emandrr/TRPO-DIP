@@ -1,0 +1,13 @@
+<a mat-button routerLink="/doctor/patients">← {{ t.navPatients }}</a>
+<h1>{{ title() }}</h1>
+@if (patient(); as p) {
+  <p class="meta">{{ p.email }} · {{ t.consent }}: {{ p.consentSigned ? t.consentYes : t.consentNo }}</p>
+}
+
+<nav class="tabs">
+  <a mat-stroked-button [routerLink]="['/doctor/patients', patientId(), 'card']" routerLinkActive="active">{{ t.navCard }}</a>
+  <a mat-stroked-button [routerLink]="['/doctor/patients', patientId(), 'diagnoses']" routerLinkActive="active">{{ t.navDiagnoses }}</a>
+  <a mat-stroked-button [routerLink]="['/doctor/patients', patientId(), 'ecg']" routerLinkActive="active">{{ t.navEcg }}</a>
+</nav>
+
+<router-outlet />

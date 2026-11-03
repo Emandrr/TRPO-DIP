@@ -1,0 +1,26 @@
+<section class="chart">
+  <div class="row">
+    <span>{{ rangeLabel() || '—' }}</span>
+    @if (loading()) {
+      <span>…</span>
+    }
+  </div>
+  <div #overviewEl class="plot overview"></div>
+  <div class="ticks">
+    <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+  </div>
+  <div #detailEl class="plot detail"></div>
+  <input type="range" min="0" max="100" value="0" (input)="onSlider($event)" />
+  <p class="hint">Окно: 10 сек. Выделите интервал на обзоре или кликните по аномалии.</p>
+
+  @if (anomalies.length) {
+    <div class="anomalies">
+      @for (a of anomalies; track a.id) {
+        <button type="button" class="note" (click)="jumpToAnomaly(a)">
+          <b>{{ a.title }}</b>
+          <span>{{ fmtPublic(a.startMs) }} – {{ fmtPublic(a.endMs) }}</span>
+        </button>
+      }
+    </div>
+  }
+</section>

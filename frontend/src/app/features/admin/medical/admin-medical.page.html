@@ -1,0 +1,45 @@
+<h1>{{ t.medicalDataTitle }}</h1>
+
+<form [formGroup]="form" class="pick">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ t.patient }}</mat-label>
+    <mat-select formControlName="patientId">
+      @for (p of patients(); track p.id) {
+        <mat-option [value]="p.id">{{ p.email }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</form>
+
+@if (form.controls.patientId.value) {
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ t.medicalCardTitle }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @if (!card()) {
+        <p>{{ t.noMedicalCard }}</p>
+      } @else {
+        <p>
+          {{ card()!.lastName }} {{ card()!.firstName }} {{ card()!.middleName || '' }} ·
+          {{ card()!.birthDate }} · {{ card()!.sex }}
+        </p>
+        <button mat-stroked-button color="warn" type="button" (click)="deleteCard()">{{ t.delete }}</button>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <h2>{{ t.diagnosesTitle }}</h2>
+  @if (diagnoses().length === 0) {
+    <p>{{ t.noDiagnoses }}</p>
+  } @else {
+    <ul>
+      @for (d of diagnoses(); track d.id) {
+        <li>
+          <strong>{{ d.title }}</strong> · {{ d.diagnosedOn }}
+          <button mat-button color="warn" type="button" (click)="deleteDiagnosis(d.id)">{{ t.delete }}</button>
+        </li>
+      }
+    </ul>
+  }
+}

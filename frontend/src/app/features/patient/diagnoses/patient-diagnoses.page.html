@@ -1,0 +1,55 @@
+<h1>{{ t.diagnosesTitle }}</h1>
+
+@if (loading()) {
+  <p>…</p>
+} @else if (items().length === 0) {
+  <mat-card><mat-card-content>{{ t.noDiagnoses }}</mat-card-content></mat-card>
+} @else {
+  <mat-accordion multi>
+    @for (item of items(); track item.diagnosis.id) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ item.diagnosis.title }}</mat-panel-title>
+          <mat-panel-description>{{ t.diagnosedOn }}: {{ item.diagnosis.diagnosedOn }}</mat-panel-description>
+        </mat-expansion-panel-header>
+
+        @if (item.diagnosis.description) {
+          <p>{{ item.diagnosis.description }}</p>
+        }
+
+        <h3>{{ t.recommendations }}</h3>
+        @if (item.recommendations.length === 0) {
+          <p>{{ t.noRecommendations }}</p>
+        } @else {
+          <ul>
+            @for (r of item.recommendations; track r.id) {
+              <li>
+                <strong>{{ r.text }}</strong>
+                @if (r.comment) {
+                  <div>{{ r.comment }}</div>
+                }
+              </li>
+            }
+          </ul>
+        }
+
+        <h3>{{ t.prescriptions }}</h3>
+        @if (item.prescriptions.length === 0) {
+          <p>{{ t.noPrescriptions }}</p>
+        } @else {
+          <ul>
+            @for (p of item.prescriptions; track p.id) {
+              <li>
+                <strong>{{ p.drugName }}</strong>
+                <div>{{ t.period }}: {{ p.startDate }} — {{ p.endDate }}</div>
+                @if (p.comment) {
+                  <div>{{ p.comment }}</div>
+                }
+              </li>
+            }
+          </ul>
+        }
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+}

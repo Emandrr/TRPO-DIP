@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.auth-shell {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(25, 118, 210, 0.12), transparent 40%),
+    radial-gradient(circle at 80% 0%, rgba(0, 150, 136, 0.1), transparent 35%),
+    #f5f7fb;
+}
+
+.auth-card {
+  width: min(420px, 100%);
+}
+
+.auth-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}

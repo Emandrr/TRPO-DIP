@@ -1,0 +1,27 @@
+.create {
+  margin-bottom: 1rem;
+}
+
+.form,
+.inline {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.inline.rx {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  align-items: start;
+}
+
+h3 {
+  margin: 1rem 0 0.4rem;
+  font-size: 1rem;
+}
+
+ul {
+  padding-left: 1.1rem;
+}
+
+li {
+  margin-bottom: 0.35rem;
+}

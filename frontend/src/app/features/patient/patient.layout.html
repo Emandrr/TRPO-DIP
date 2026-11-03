@@ -1,0 +1,14 @@
+<mat-toolbar color="primary" class="top">
+  <a routerLink="/patient" class="brand">{{ t.appTitle }}</a>
+  <nav class="nav">
+    <a mat-button routerLink="/patient/card" routerLinkActive="active">{{ t.navCard }}</a>
+    <a mat-button routerLink="/patient/diagnoses" routerLinkActive="active">{{ t.navDiagnoses }}</a>
+    <a mat-button routerLink="/patient/ecg" routerLinkActive="active">{{ t.navEcg }}</a>
+    <a mat-button routerLink="/patient/upload" routerLinkActive="active">{{ t.navUpload }}</a>
+  </nav>
+  <span class="spacer"></span>
+  <button mat-button type="button" (click)="auth.logout()">{{ t.logout }}</button>
+</mat-toolbar>
+<main class="content">
+  <router-outlet />
+</main>

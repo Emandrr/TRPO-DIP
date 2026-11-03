@@ -1,0 +1,15 @@
+<mat-toolbar color="primary" class="top">
+  <a routerLink="/admin" class="brand">{{ t.appTitle }} · {{ t.homeAdmin }}</a>
+  <nav class="nav">
+    <a mat-button routerLink="/admin/users" routerLinkActive="active">{{ t.navUsers }}</a>
+    <a mat-button routerLink="/admin/assignments" routerLinkActive="active">{{ t.navAssignments }}</a>
+    <a mat-button routerLink="/admin/devices" routerLinkActive="active">{{ t.navDevices }}</a>
+    <a mat-button routerLink="/admin/logs" routerLinkActive="active">{{ t.navLogs }}</a>
+    <a mat-button routerLink="/admin/medical" routerLinkActive="active">{{ t.navMedical }}</a>
+  </nav>
+  <span class="spacer"></span>
+  <button mat-button type="button" (click)="auth.logout()">{{ t.logout }}</button>
+</mat-toolbar>
+<main class="content">
+  <router-outlet />
+</main>

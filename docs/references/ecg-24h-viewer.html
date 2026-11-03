@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ECG 24h viewer</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#fff;--fg:#1a1a1a;--mut:#666;--line:#ddd;--ecg:#0a7a3d;--sel:rgba(220,50,50,.25);--acc:#d33}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161616;--fg:#eee;--mut:#999;--line:#333;--ecg:#4ade80;--sel:rgba(255,90,90,.3);--acc:#f66}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px system-ui,sans-serif;padding:16px;max-width:900px;margin-inline:auto}
+h1{font-size:18px;margin:0 0 12px}
+canvas{width:100%;display:block;border:1px solid var(--line);border-radius:6px;touch-action:pan-y}
+#ov{height:90px;cursor:crosshair;touch-action:none}
+#dt{height:180px;margin-top:8px}
+.row{display:flex;justify-content:space-between;color:var(--mut);font-size:13px;margin:6px 0}
+input[type=range]{width:100%}
+textarea{width:100%;height:70px;box-sizing:border-box;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:8px;font:inherit}
+button{background:var(--acc);color:#fff;border:0;border-radius:6px;padding:8px 14px;font:inherit;margin-top:6px;cursor:pointer}
+.note{border-bottom:1px solid var(--line);padding:8px 0;cursor:pointer}
+.note b{color:var(--acc)}
+</style>
+</head>
+<body>
+<h1>ЭКГ за 24 часа (демо-данные)</h1>
+
+<canvas id="ov"></canvas>
+<div class="row"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+
+<div class="row"><span id="range">Выделите интервал мышью на графике выше (или кликните по часу)</span><span id="stat"></span></div>
+<canvas id="dt"></canvas>
+<input type="range" id="pos" min="0" max="100" value="0">
+<div class="row"><span>Окно: 10 сек. Двигайте ползунок внутри интервала</span></div>
+
+<textarea id="txt" placeholder="Заметка к выбранному интервалу…"></textarea>
+<button id="save">Сохранить заметку</button>
+<div id="notes"></div>
+
+<script>
+const DAY = 86400, WIN = 10;
+let sel = null;
+let notes = [];
+try { notes = JSON.parse(localStorage.getItem('ecg_notes') || '[]'); } catch(e) {}
+
+const hrAt = m => 65 + 12*Math.sin(m/1440*2*Math.PI*2 - 1) + (m>=200&&m<215 ? 45 : 0) + (m>=780&&m<800 ? 25 : 0);
+const g = (x,c,w,a) => a*Math.exp(-((x-c)**2)/(2*w*w));
+function ecg(t){
+  const m = Math.floor(t/60), rr = 60/hrAt(m);
+  const p = ((t - m*60) % rr) / rr;
+  return g(p,.18,.025,.15)+g(p,.37,.008,-.12)+g(p,.4,.009,1)+g(p,.43,.009,-.25)+g(p,.66,.05,.3)
+       + (Math.sin(t*97)*Math.sin(t*13.3))*.02;
+}
+const fmt = s => { s=Math.max(0,Math.floor(s)); return [s/3600|0,(s/60|0)%60,s%60].map(v=>String(v).padStart(2,'0')).join(':'); };
+
+function setup(c){ const d=devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;
+  c.width=w*d;c.height=h*d;const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return {x,w,h}; }
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v);
+const ov = document.getElementById('ov'), dt = document.getElementById('dt');
+
+function drawOverview(){
+  const {x,w,h} = setup(ov);
+  x.strokeStyle = css('--line'); x.lineWidth=1;
+  for(let i=0;i<=24;i++){ const px=i/24*w; x.beginPath();x.moveTo(px,0);x.lineTo(px,i%6?h*.85:h);x.stroke(); }
+  x.strokeStyle = css('--ecg'); x.beginPath();
+  for(let m=0;m<1440;m++){ const px=m/1440*w, py=h-(hrAt(m)-40)/110*h; m?x.lineTo(px,py):x.moveTo(px,py); }
+  x.stroke();
+  notes.forEach(n=>{ x.fillStyle=css('--acc'); x.fillRect(n.a/DAY*w,0,Math.max(2,(n.b-n.a)/DAY*w),4); });
+  if(sel){ x.fillStyle=css('--sel'); x.fillRect(sel.a/DAY*w,0,Math.max(2,(sel.b-sel.a)/DAY*w),h); }
+}
+
+function drawDetail(){
+  const {x,w,h} = setup(dt);
+  x.strokeStyle=css('--line'); x.lineWidth=1;
+  for(let i=0;i<=WIN*5;i++){ const px=i/(WIN*5)*w; x.beginPath();x.moveTo(px,0);x.lineTo(px,h);x.stroke(); }
+  if(!sel) return;
+  const span = Math.max(0, sel.b - sel.a - WIN);
+  const t0 = sel.a + span*document.getElementById('pos').value/100;
+  x.strokeStyle=css('--ecg'); x.lineWidth=1.5; x.beginPath();
+  for(let px=0;px<w;px++){ const t=t0+px/w*WIN, y=h*.75-ecg(t)*h*.6; px?x.lineTo(px,y):x.moveTo(px,y); }
+  x.stroke();
+  x.fillStyle=css('--mut'); x.font='12px system-ui'; x.fillText(fmt(t0)+' – '+fmt(t0+WIN),6,14);
+}
+
+function refresh(){
+  drawOverview(); drawDetail();
+  const r=document.getElementById('range'), s=document.getElementById('stat');
+  if(sel){ r.textContent='Интервал: '+fmt(sel.a)+' – '+fmt(sel.b);
+    let sum=0,n=0; for(let t=sel.a;t<sel.b;t+=60){sum+=hrAt(t/60|0);n++;}
+    s.textContent='ЧСС ср. ≈ '+Math.round(sum/Math.max(n,1))+' уд/мин'; }
+  const box=document.getElementById('notes'); box.innerHTML='';
+  notes.slice().sort((p,q)=>p.a-q.a).forEach(n=>{
+    const d=document.createElement('div'); d.className='note';
+    d.innerHTML='<b>'+fmt(n.a)+' – '+fmt(n.b)+'</b><br>';
+    d.appendChild(document.createTextNode(n.text));
+    d.onclick=()=>{ sel={a:n.a,b:n.b}; document.getElementById('pos').value=0; refresh(); };
+    box.appendChild(d);
+  });
+}
+
+let drag=null;
+const tOf = e => Math.min(DAY,Math.max(0,(e.clientX-ov.getBoundingClientRect().left)/ov.clientWidth*DAY));
+ov.addEventListener('pointerdown',e=>{ ov.setPointerCapture(e.pointerId); drag={s:tOf(e),moved:false}; });
+ov.addEventListener('pointermove',e=>{ if(!drag) return; const t=tOf(e);
+  if(Math.abs(t-drag.s)>120) drag.moved=true;
+  if(drag.moved){ sel={a:Math.min(drag.s,t),b:Math.max(drag.s,t)}; document.getElementById('pos').value=0; refresh(); } });
+ov.addEventListener('pointerup',e=>{ if(drag&&!drag.moved){ const h=Math.floor(drag.s/3600); sel={a:h*3600,b:(h+1)*3600}; refresh(); } drag=null; });
+
+document.getElementById('pos').oninput = drawDetail;
+document.getElementById('save').onclick = () => {
+  const text=document.getElementById('txt').value.trim();
+  if(!sel||!text) return;
+  notes.push({a:Math.floor(sel.a),b:Math.ceil(sel.b),text});
+  try{ localStorage.setItem('ecg_notes',JSON.stringify(notes)); }catch(e){}
+  document.getElementById('txt').value=''; refresh();
+};
+addEventListener('resize',refresh);
+refresh();
+</script>
+</body>
+</html>

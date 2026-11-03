@@ -1,0 +1,11 @@
+<mat-toolbar color="primary" class="top">
+  <a routerLink="/doctor" class="brand">{{ t.appTitle }} · {{ t.homeDoctor }}</a>
+  <nav class="nav">
+    <a mat-button routerLink="/doctor/patients" routerLinkActive="active">{{ t.navPatients }}</a>
+  </nav>
+  <span class="spacer"></span>
+  <button mat-button type="button" (click)="auth.logout()">{{ t.logout }}</button>
+</mat-toolbar>
+<main class="content">
+  <router-outlet />
+</main>

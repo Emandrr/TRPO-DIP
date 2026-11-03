@@ -1,0 +1,44 @@
+<h1>{{ t.devicesTitle }}</h1>
+
+<mat-card class="create">
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="create()" class="form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.deviceName }}</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.serialNumber }}</mat-label>
+        <input matInput formControlName="serialNumber" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.model }}</mat-label>
+        <input matInput formControlName="model" />
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">{{ t.create }}</button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<table mat-table [dataSource]="devices()" class="table">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>{{ t.deviceName }}</th>
+    <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+  </ng-container>
+  <ng-container matColumnDef="serialNumber">
+    <th mat-header-cell *matHeaderCellDef>S/N</th>
+    <td mat-cell *matCellDef="let row">{{ row.serialNumber }}</td>
+  </ng-container>
+  <ng-container matColumnDef="model">
+    <th mat-header-cell *matHeaderCellDef>{{ t.model }}</th>
+    <td mat-cell *matCellDef="let row">{{ row.model || '—' }}</td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let row">
+      <button mat-button color="warn" type="button" (click)="remove(row)">{{ t.delete }}</button>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns"></tr>
+</table>

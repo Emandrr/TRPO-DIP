@@ -1,0 +1,26 @@
+.create,
+.temp {
+  margin-bottom: 1rem;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.table {
+  width: 100%;
+  background: #fff;
+}
+
+.actions {
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+}

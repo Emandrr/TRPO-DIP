@@ -1,0 +1,40 @@
+.grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.grid div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.grid span {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+}
+
+.decision,
+.diag {
+  margin: 1rem 0;
+}
+
+.form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.anoms {
+  display: grid;
+  gap: 0.35rem;
+}
+
+h3 {
+  margin: 0;
+  font-size: 1rem;
+}

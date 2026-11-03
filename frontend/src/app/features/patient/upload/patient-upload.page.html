@@ -1,0 +1,38 @@
+<h1>{{ t.uploadTitle }}</h1>
+
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.selectDevice }}</mat-label>
+        <mat-select formControlName="deviceId">
+          @for (d of devices(); track d.id) {
+            <mat-option [value]="d.id">{{ d.name }} ({{ d.serialNumber }})</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div
+        class="drop"
+        [class.over]="dragOver()"
+        (dragover)="$event.preventDefault(); dragOver.set(true)"
+        (dragleave)="dragOver.set(false)"
+        (drop)="onDrop($event)"
+      >
+        <p>{{ t.dropHint }}</p>
+        @if (file()) {
+          <strong>{{ file()!.name }}</strong>
+        }
+        <input type="file" accept=".csv,text/csv" (change)="onFileInput($event)" />
+      </div>
+
+      @if (csvHint()) {
+        <p class="error">{{ csvHint() }}</p>
+      }
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="busy() || !file()">
+        {{ busy() ? t.uploading : t.uploadSubmit }}
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>

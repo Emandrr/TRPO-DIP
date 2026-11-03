@@ -1,0 +1,34 @@
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  min-height: 64px;
+}
+
+.brand {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.nav a.active {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.content {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}

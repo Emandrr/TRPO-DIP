@@ -1,0 +1,15 @@
+.meta {
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: -0.5rem;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.tabs a.active {
+  background: rgba(25, 118, 210, 0.12);
+}

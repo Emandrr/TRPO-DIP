@@ -1,0 +1,47 @@
+<h2>{{ t.medicalCardTitle }}</h2>
+
+@if (loading()) {
+  <p>…</p>
+} @else {
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="save()" class="form">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ t.lastName }}</mat-label>
+          <input matInput formControlName="lastName" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ t.firstName }}</mat-label>
+          <input matInput formControlName="firstName" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ t.middleName }}</mat-label>
+          <input matInput formControlName="middleName" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ t.birthDate }}</mat-label>
+          <input matInput formControlName="birthDate" [placeholder]="t.dateFormatHint" />
+          @if (form.controls.birthDate.hasError('ruDate')) {
+            <mat-error>{{ t.invalidDate }}</mat-error>
+          } @else if (form.controls.birthDate.hasError('futureDate')) {
+            <mat-error>{{ t.futureDate }}</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ t.sex }}</mat-label>
+          <mat-select formControlName="sex">
+            <mat-option value="мужской">{{ t.sexMale }}</mat-option>
+            <mat-option value="женский">{{ t.sexFemale }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="busy()">{{ t.save }}</button>
+          @if (exists()) {
+            <button mat-stroked-button color="warn" type="button" (click)="remove()">{{ t.delete }}</button>
+          }
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+}

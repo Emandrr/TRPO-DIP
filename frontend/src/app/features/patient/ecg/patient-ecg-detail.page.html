@@ -1,0 +1,37 @@
+<a mat-button routerLink="/patient/ecg">← {{ t.navEcg }}</a>
+
+@if (!record()) {
+  <p>…</p>
+} @else {
+  <h1>{{ record()!.originalFilename }}</h1>
+  <mat-card>
+    <mat-card-content class="grid">
+      <div><span>{{ t.status }}</span><strong>{{ record()!.status }}</strong></div>
+      <div><span>{{ t.uploadedAt }}</span><strong>{{ record()!.uploadedAt | date: 'dd.MM.yyyy HH:mm' }}</strong></div>
+      <div><span>samples</span><strong>{{ record()!.sampleCount }}</strong></div>
+      @if (record()!.failureCode) {
+        <div><span>failure</span><strong>{{ record()!.failureCode }}</strong></div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  @if (report(); as r) {
+    <h2>Отчёт</h2>
+    <mat-card>
+      <mat-card-content class="grid">
+        <div><span>Отведение</span><strong>{{ r.lead }}</strong></div>
+        <div><span>ЧСС ср.</span><strong>{{ r.summary.hrMean ?? '—' }}</strong></div>
+        <div><span>Аномалии</span><strong>{{ r.anomalies.length }}</strong></div>
+      </mat-card-content>
+    </mat-card>
+
+    @if (durationMs() > 0) {
+      <app-ecg-chart
+        [recordId]="id"
+        [durationMs]="durationMs()"
+        [anomalies]="r.anomalies"
+        [gaps]="r.gaps"
+      />
+    }
+  }
+}
