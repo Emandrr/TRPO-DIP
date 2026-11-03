@@ -1,0 +1,59 @@
+<h1>{{ t.logsTitle }}</h1>
+
+<mat-card class="filters">
+  <mat-card-content>
+    <form [formGroup]="filterForm" (ngSubmit)="apply()" class="form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.logLevel }}</mat-label>
+        <mat-select formControlName="level">
+          <mat-option value="">—</mat-option>
+          <mat-option value="Information">Information</mat-option>
+          <mat-option value="Warning">Warning</mat-option>
+          <mat-option value="Error">Error</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.logModule }}</mat-label>
+        <input matInput formControlName="module" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.logCode }}</mat-label>
+        <input matInput formControlName="code" />
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">{{ t.applyFilter }}</button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<p class="meta">{{ t.total }}: {{ total() }}</p>
+
+<table mat-table [dataSource]="items()" class="table">
+  <ng-container matColumnDef="ts">
+    <th mat-header-cell *matHeaderCellDef>{{ t.time }}</th>
+    <td mat-cell *matCellDef="let row">{{ row.ts | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+  </ng-container>
+  <ng-container matColumnDef="level">
+    <th mat-header-cell *matHeaderCellDef>{{ t.logLevel }}</th>
+    <td mat-cell *matCellDef="let row">{{ row.level }}</td>
+  </ng-container>
+  <ng-container matColumnDef="module">
+    <th mat-header-cell *matHeaderCellDef>{{ t.logModule }}</th>
+    <td mat-cell *matCellDef="let row">{{ row.module }}</td>
+  </ng-container>
+  <ng-container matColumnDef="code">
+    <th mat-header-cell *matHeaderCellDef>{{ t.logCode }}</th>
+    <td mat-cell *matCellDef="let row">{{ row.code || '—' }}</td>
+  </ng-container>
+  <ng-container matColumnDef="message">
+    <th mat-header-cell *matHeaderCellDef>{{ t.logMessage }}</th>
+    <td mat-cell *matCellDef="let row" class="msg">{{ row.message }}</td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns"></tr>
+</table>
+
+<div class="pager">
+  <button mat-button type="button" (click)="prev()" [disabled]="page() <= 1">{{ t.prevPage }}</button>
+  <span>{{ page() }}</span>
+  <button mat-button type="button" (click)="next()" [disabled]="page() * 50 >= total()">{{ t.nextPage }}</button>
+</div>

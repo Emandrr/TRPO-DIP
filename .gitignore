@@ -42,13 +42,12 @@ test-results/
 
 # Data & backups (local)
 **/data/
-**/duckdb/
 **/backups/
 *.duckdb
 *.duckdb.wal
 
-# Logs
-logs/
+# Logs (runtime output only; not source folders like admin/logs)
+/logs/
 *.log
 
 # IDE
